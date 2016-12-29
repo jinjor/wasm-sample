@@ -1,0 +1,33 @@
+<script type='text/javascript'>
+  function toString(buf, index) {
+    var s = '';
+    for(var i = index; i < buf.length; i++) {
+      var c = buf[i];
+      if(c === 0) {
+        break;
+      }
+      s += String.fromCharCode(c);
+    }
+    return s;
+  }
+
+  function getInstance() {
+    return fetch('sample.wasm')
+      .then(response => response.arrayBuffer())
+      .then(buffer => WebAssembly.compile(buffer))
+      .then(module => {
+        var env = {
+          puts: s => {
+            console.log(toString(buf, s));
+          }
+        };
+        var importObject = { env: env };
+        var instance = new WebAssembly.Instance(module, importObject);
+        var buf = new Uint8Array(instance.exports.memory.buffer);
+        return instance;
+      });
+  }
+  getInstance().then(instance => {
+    instance.exports.hello();
+  });
+</script>
