@@ -18,7 +18,7 @@
       .then(module => {
         var env = {
           puts: s => {
-            console.log(toString(buf, s));
+            document.write(toString(buf, s));
           }
         };
         var importObject = { env: env };
